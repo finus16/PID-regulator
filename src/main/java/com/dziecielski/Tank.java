@@ -11,7 +11,7 @@ public class Tank{
         this.a = a;
         this.maxHeight = h;
         this.pid = new Pid(0.7f, 0.05f, 1.8f); // set PID 
-        this.pump = new Pump(5.0f); // set pump with desired flow (in m^3/s)
+        this.pump = new Pump(5.0f); // set pump with desired flow
         this.hole = 0.5f; // set hole in tank
         this.pid.setSetpoint(0.8f*this.maxHeight); // we desire 0.8 of the maximum height
     }
@@ -36,9 +36,28 @@ public class Tank{
         this.hole = hole;
     }
 
-    void calculate(){
+    public float getInflow(){
+        return this.pump.getFlow();
+    }
+
+    public float getOutflow(){
+        return (this.h * this.hole);
+    }
+
+    public int getFill(){
+        return (int)(this.h / this.maxHeight * 100);
+    }
+
+    public void calculate(){
         float delta = pump.getFlow() - (h * hole); 
         this.h = this.h + (delta / (this.a*this.a));
+        if(this.h>maxHeight){
+            this.h = maxHeight;
+        }
+        if(this.h<0.0f){
+            this.h = 0.0f;
+        }
+
 
         float pidOutput = this.pid.getOutput(this.h);
         if(pidOutput>5.0f){
@@ -49,8 +68,6 @@ public class Tank{
         }
 
         pump.setFlow(pidOutput);
-
-        System.out.printf("h: %f, delta: %f, flow: %f\n", this.h, delta, pump.getFlow());
     }
 
 
