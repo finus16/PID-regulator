@@ -54,18 +54,15 @@ public class Pid{
     }
 
     private float getP(float deviation){
-        System.out.printf("P: %f, ", this.Kp * deviation);
         return this.Kp * deviation;
     }
 
     private float getI(float deviation){
         this.sum += deviation;
-        System.out.printf("I: %f, ", this.Pi * this.sum);
         return this.Pi * this.sum;
     }
 
     private float getD(float deviation){
-        System.out.printf("D: %f\n", this.Pd * (this.current - this.last));
         return this.Pd * (this.current - this.last);
     }
 
@@ -73,7 +70,7 @@ public class Pid{
         this.last = this.current;
         this.current = current;
 
-        float deviation = this.setPoint - this.current;// uchyb
+        float deviation = this.setPoint - this.current;
         return getP(deviation) + getI(deviation) + getD(deviation);
     }
 }
